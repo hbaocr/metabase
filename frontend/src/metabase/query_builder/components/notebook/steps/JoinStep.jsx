@@ -87,7 +87,7 @@ class JoinClause extends React.Component {
     const strategyOption = join.strategyOption();
     return (
       <Flex align="center" flex="1 1 auto" {...props}>
-        <NotebookCellItem color={color} icon="table2">
+        <NotebookCellItem color={color}>
           {(lhsTable && lhsTable.displayName()) || `Previous results`}
         </NotebookCellItem>
 
@@ -147,11 +147,7 @@ class JoinClause extends React.Component {
           }}
           isInitiallyOpen={join.joinSourceTableId() == null}
           triggerElement={
-            <NotebookCellItem
-              color={color}
-              icon="table2"
-              inactive={!joinedTable}
-            >
+            <NotebookCellItem color={color} inactive={!joinedTable}>
               {joinedTable ? joinedTable.displayName() : t`Pick a table...`}
             </NotebookCellItem>
           }
