@@ -172,60 +172,87 @@ export default class DatabaseEditApp extends Component {
                   />
                 </div>
               )}
-              <Flex>
-                <Box w={620}>
-                  <LoadingAndErrorWrapper
-                    loading={!database}
-                    error={initializeError}
+              <LoadingAndErrorWrapper
+                loading={!database}
+                error={initializeError}
+              >
+                {() => (
+                  <Databases.Form
+                    database={database}
+                    form={Databases.forms[currentTab]}
+                    formName={DATABASE_FORM_NAME}
+                    onSubmit={
+                      addingNewDatabase && currentTab === "connection"
+                        ? this.props.proceedWithDbCreation
+                        : this.props.saveDatabase
+                    }
+                    submitTitle={addingNewDatabase ? t`Save` : t`Save changes`}
+                    renderSubmit={
+                      // override use of ActionButton for the `Next` button
+                      addingNewDatabase &&
+                      currentTab === "connection" &&
+                      letUserControlSchedulingForm &&
+                      (({ handleSubmit, canSubmit }) => (
+                        <Button
+                          primary={canSubmit}
+                          disabled={!canSubmit}
+                          onClick={handleSubmit}
+                        >
+                          {t`Next`}
+                        </Button>
+                      ))
+                    }
+                    submitButtonComponent={Button}
                   >
-                    {() => (
-                      <Databases.Form
-                        database={database}
-                        form={Databases.forms[currentTab]}
-                        formName={DATABASE_FORM_NAME}
-                        onSubmit={
-                          addingNewDatabase && currentTab === "connection"
-                            ? this.props.proceedWithDbCreation
-                            : this.props.saveDatabase
-                        }
-                        submitTitle={
-                          addingNewDatabase ? t`Save` : t`Save changes`
-                        }
-                        renderSubmit={
-                          // override use of ActionButton for the `Next` button
-                          addingNewDatabase &&
-                          currentTab === "connection" &&
-                          letUserControlSchedulingForm &&
-                          (({ handleSubmit, canSubmit }) => (
-                            <Button
-                              primary={canSubmit}
-                              disabled={!canSubmit}
-                              onClick={handleSubmit}
-                            >
-                              {t`Next`}
-                            </Button>
-                          ))
-                        }
-                        submitButtonComponent={Button}
-                      />
-                    )}
-                  </LoadingAndErrorWrapper>
-                </Box>
-                <Box>
-                  <DriverWarning
-                    engine={selectedEngine}
-                    ml={26}
-                    data-testid="database-setup-driver-warning"
-                  />
-                  {addingNewDatabase && (
-                    <AddDatabaseHelpCard
-                      engine={selectedEngine}
-                      ml={26}
-                      data-testid="database-setup-help-card"
-                    />
-                  )}
-                </Box>
-              </Flex>
+                    {({
+                      Form,
+                      FormField,
+                      handleSubmit,
+                      canSubmit,
+                      onChangeField,
+                      ...props
+                    }) => {
+                      return (
+                        <Flex>
+                          <Box w={620}>
+                            <Form>
+                              <FormField name="engine" />
+                              {addingNewDatabase &&
+                                currentTab === "connection" &&
+                                letUserControlSchedulingForm && (
+                                  <Button
+                                    primary={canSubmit}
+                                    disabled={!canSubmit}
+                                    onClick={handleSubmit}
+                                  >
+                                    {t`Next`}
+                                  </Button>
+                                )}
+                            </Form>
+                          </Box>
+                          <Box>
+                            <DriverWarning
+                              engine={selectedEngine}
+                              ml={26}
+                              onChangeEngine={engine => {
+                                onChangeField("engine", engine);
+                              }}
+                              data-testid="database-setup-driver-warning"
+                            />
+                            {addingNewDatabase && (
+                              <AddDatabaseHelpCard
+                                engine={selectedEngine}
+                                ml={26}
+                                data-testid="database-setup-help-card"
+                              />
+                            )}
+                          </Box>
+                        </Flex>
+                      );
+                    }}
+                  </Databases.Form>
+                )}
+              </LoadingAndErrorWrapper>
             </div>
           </Box>
 
