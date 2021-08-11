@@ -145,3 +145,36 @@ export const DASHBOARD_SQL_TEXT_FILTERS = {
     representativeResult: "Small Marble Shoes",
   },
 };
+
+export const DASHBOARD_SQL_LOCATION_FILTERS = {
+  Dropdown: {
+    sqlFilter: "string/=",
+    value: "Rye",
+    representativeResult: "Arnold Adams",
+  },
+  "Is not": {
+    sqlFilter: "string/!=",
+    value: "Rye",
+    representativeResult: "Hudson Borer",
+  },
+  Contains: {
+    sqlFilter: "string/contains",
+    value: "oo",
+    representativeResult: "Hudson Borer",
+  },
+  "Does not contain": {
+    sqlFilter: "string/does-not-contain",
+    value: "oo",
+    representativeResult: "Domenica Williamson",
+  },
+  "Starts with": {
+    sqlFilter: "string/starts-with",
+    value: "W",
+    representativeResult: "Hudson Borer",
+  },
+  "Ends with": {
+    sqlFilter: "string/ends-with",
+    value: "g",
+    representativeResult: "Aracely Jenkins",
+  },
+};
