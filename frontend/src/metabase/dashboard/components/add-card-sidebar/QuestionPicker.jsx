@@ -82,23 +82,17 @@ function QuestionPicker({
           </BreadcrumbsWrapper>
 
           <SelectList>
-            {collections.map(collection => {
-              const icon = getCollectionIcon(collection);
-              return (
-                <SelectList.Item
-                  hasRightArrow
-                  key={collection.id}
-                  id={collection.id}
-                  name={collection.name}
-                  icon={icon.name}
-                  iconColor={icon.color}
-                  isHighlighted={!isRegularCollection(collection)}
-                  onSelect={collectionId =>
-                    setCurrentCollectionId(collectionId)
-                  }
-                />
-              );
-            })}
+            {collections.map(collection => (
+              <SelectList.Item
+                hasRightArrow
+                key={collection.id}
+                id={collection.id}
+                name={collection.name}
+                icon={getCollectionIcon(collection)}
+                isHighlighted={!isRegularCollection(collection)}
+                onSelect={collectionId => setCurrentCollectionId(collectionId)}
+              />
+            ))}
           </SelectList>
         </React.Fragment>
       )}
