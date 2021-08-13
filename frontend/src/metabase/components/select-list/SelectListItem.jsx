@@ -1,13 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "underscore";
+
+import { iconPropTypes } from "metabase/components/Icon";
+import { useScrollOnMount } from "metabase/hooks/use-scroll-on-mount";
 
 import { ItemRoot, ItemIcon, ItemTitle } from "./SelectListItem.styled";
-import { useScrollOnMount } from "metabase/hooks/use-scroll-on-mount";
 
 const propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.oneOfType([PropTypes.string, iconPropTypes]).isRequired,
   iconColor: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
   isSelected: PropTypes.bool,
@@ -20,7 +23,6 @@ export function SelectListItem({
   id,
   name,
   icon,
-  iconColor = "brand",
   onSelect,
   isSelected = false,
   isHighlighted = false,
@@ -28,7 +30,7 @@ export function SelectListItem({
   size = "medium",
 }) {
   const ref = useScrollOnMount();
-
+  const iconProps = _.isObject(icon) ? icon : { name: icon };
   return (
     <ItemRoot
       innerRef={isSelected ? ref : null}
@@ -39,7 +41,7 @@ export function SelectListItem({
       onClick={() => onSelect(id)}
       onKeyDown={e => e.key === "Enter" && onSelect(id)}
     >
-      <ItemIcon name={icon} color={iconColor} isHighlighted={isHighlighted} />
+      <ItemIcon color="brand" {...iconProps} isHighlighted={isHighlighted} />
       <ItemTitle>{name}</ItemTitle>
       {hasRightArrow && <ItemIcon name="chevronright" />}
     </ItemRoot>
