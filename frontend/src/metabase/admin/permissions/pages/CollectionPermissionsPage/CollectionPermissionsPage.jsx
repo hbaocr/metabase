@@ -41,7 +41,7 @@ function CollectionsPermissionsPage({
   updateCollectionPermission,
   navigateToItem,
   initialize,
-  route
+  route,
 }) {
   useEffect(() => {
     initialize();
