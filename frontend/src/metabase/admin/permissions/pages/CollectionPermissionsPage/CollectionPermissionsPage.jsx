@@ -12,7 +12,7 @@ import {
   PermissionsEditor,
   PermissionsEditorEmptyState,
 } from "../../components/PermissionsEditor";
-import { PermissionsPageLayout } from "../../components/PermissionsPageLayout/PermissionsPageLayout";
+import PermissionsPageLayout from "../../components/PermissionsPageLayout/PermissionsPageLayout";
 import {
   initializeCollectionPermissions,
   updateCollectionPermission,
@@ -27,8 +27,6 @@ import {
   getDiff,
 } from "../../selectors/collection-permissions";
 import { PermissionsSidebar } from "../../components/PermissionsSidebar";
-import { PermissionsEditBar } from "../../components/PermissionsPageLayout/PermissionsEditBar";
-import { useLeaveConfirmation } from "../../hooks/use-leave-confirmation";
 
 function CollectionsPermissionsPage({
   sidebar,
@@ -42,23 +40,12 @@ function CollectionsPermissionsPage({
 
   updateCollectionPermission,
   navigateToItem,
-  navigateToTab,
   initialize,
-
-  router,
-  route,
-  navigateToLocation,
+  route
 }) {
   useEffect(() => {
     initialize();
   }, [initialize]);
-
-  const beforeLeaveConfirmation = useLeaveConfirmation({
-    router,
-    route,
-    onConfirm: navigateToLocation,
-    isEnabled: isDirty,
-  });
 
   const handlePermissionChange = useCallback(
     (item, _permission, value, toggleState) => {
@@ -75,17 +62,11 @@ function CollectionsPermissionsPage({
   return (
     <PermissionsPageLayout
       tab="collections"
-      onChangeTab={navigateToTab}
-      confirmBar={
-        isDirty && (
-          <PermissionsEditBar
-            diff={diff}
-            isDirty={isDirty}
-            onSave={savePermissions}
-            onCancel={() => loadPermissions()}
-          />
-        )
-      }
+      diff={diff}
+      isDirty={isDirty}
+      route={route}
+      onSave={savePermissions}
+      onLoad={() => loadPermissions()}
     >
       <PermissionsSidebar {...sidebar} onSelect={navigateToItem} />
 
@@ -102,8 +83,6 @@ function CollectionsPermissionsPage({
           onChange={handlePermissionChange}
         />
       )}
-
-      {beforeLeaveConfirmation}
     </PermissionsPageLayout>
   );
 }
@@ -111,11 +90,9 @@ function CollectionsPermissionsPage({
 const mapDispatchToProps = {
   initialize: initializeCollectionPermissions,
   loadPermissions: loadCollectionPermissions,
-  navigateToTab: tab => push(`/admin/permissions/${tab}`),
   navigateToItem: ({ id }) => push(`/admin/permissions/collections/${id}`),
   updateCollectionPermission,
   savePermissions: saveCollectionPermissions,
-  navigateToLocation: location => push(location.pathname, location.state),
 };
 
 const mapStateToProps = (state, props) => {

@@ -1,3 +1,4 @@
+import { t } from "ttag";
 import {
   createAction,
   createThunkAction,
@@ -120,6 +121,32 @@ export const saveCollectionPermissions = createThunkAction(
     });
     return result;
   },
+);
+
+const CLEAR_SAVE_ERROR = "metabase/admin/permissions/CLEAR_SAVE_ERROR";
+export const clearSaveError = createAction(CLEAR_SAVE_ERROR);
+
+const savePermission = {
+  next: _state => null,
+  throw: (_state, { payload }) =>
+    (payload && typeof payload.data === "string"
+      ? payload.data
+      : payload.data.message) || t`Sorry, an error occurred.`,
+};
+
+const saveError = handleActions(
+  {
+    [SAVE_DATA_PERMISSIONS]: savePermission,
+    [LOAD_DATA_PERMISSIONS]: {
+      next: state => null,
+    },
+    [SAVE_COLLECTION_PERMISSIONS]: savePermission,
+    [LOAD_COLLECTION_PERMISSIONS]: {
+      next: state => null,
+    },
+    [CLEAR_SAVE_ERROR]: { next: () => null },
+  },
+  null,
 );
 
 function getDecendentCollections(collection) {
@@ -264,6 +291,7 @@ const collectionPermissionsRevision = handleActions(
 );
 
 export default combineReducers({
+  saveError,
   dataPermissions,
   originalDataPermissions,
   dataPermissionsRevision,

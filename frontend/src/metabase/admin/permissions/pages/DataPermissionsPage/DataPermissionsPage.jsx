@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { push } from "react-router-redux";
 import _ from "underscore";
 import { connect } from "react-redux";
 
@@ -13,10 +12,7 @@ import {
   loadDataPermissions,
   initializeDataPermissions,
 } from "../../permissions";
-import { PermissionsEditBar } from "../../components/PermissionsPageLayout/PermissionsEditBar";
-import { PermissionsPageLayout } from "../../components/PermissionsPageLayout/PermissionsPageLayout";
-import { withRouter } from "react-router";
-import { useLeaveConfirmation } from "../../hooks/use-leave-confirmation";
+import PermissionsPageLayout from "../../components/PermissionsPageLayout/PermissionsPageLayout";
 
 const propTypes = {
   children: PropTypes.node.isRequired,
@@ -25,9 +21,6 @@ const propTypes = {
   savePermissions: PropTypes.func.isRequired,
   loadPermissions: PropTypes.func.isRequired,
   initialize: PropTypes.func.isRequired,
-  navigateToTab: PropTypes.func.isRequired,
-  navigateToLocation: PropTypes.func.isRequired,
-  router: PropTypes.object,
   route: PropTypes.object,
 };
 
@@ -37,40 +30,23 @@ function DataPermissionsPage({
   diff,
   savePermissions,
   loadPermissions,
-  initialize,
-  navigateToTab,
-  router,
   route,
-  navigateToLocation,
+  initialize,
 }) {
   useEffect(() => {
     initialize();
   }, [initialize]);
 
-  const beforeLeaveConfirmation = useLeaveConfirmation({
-    router,
-    route,
-    onConfirm: navigateToLocation,
-    isEnabled: isDirty,
-  });
-
   return (
     <PermissionsPageLayout
       tab="data"
-      onChangeTab={navigateToTab}
-      confirmBar={
-        isDirty && (
-          <PermissionsEditBar
-            diff={diff}
-            isDirty={isDirty}
-            onSave={savePermissions}
-            onCancel={loadPermissions}
-          />
-        )
-      }
+      onLoad={loadPermissions}
+      onSave={savePermissions}
+      diff={diff}
+      isDirty={isDirty}
+      route={route}
     >
       {children}
-      {beforeLeaveConfirmation}
     </PermissionsPageLayout>
   );
 }
@@ -81,8 +57,6 @@ const mapDispatchToProps = {
   loadPermissions: loadDataPermissions,
   savePermissions: saveDataPermissions,
   initialize: initializeDataPermissions,
-  navigateToTab: tab => push(`/admin/permissions/${tab}`),
-  navigateToLocation: location => push(location.pathname, location.state),
 };
 
 const mapStateToProps = (state, props) => ({
@@ -91,7 +65,6 @@ const mapStateToProps = (state, props) => ({
 });
 
 export default _.compose(
-  withRouter,
   Databases.loadList({ entityQuery: { include: "tables" } }),
   Groups.loadList(),
   connect(
