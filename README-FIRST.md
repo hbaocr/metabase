@@ -6,7 +6,7 @@
   * To build the this file on armv8 machine
   ```sh
   cd  metabase
-  docker build -f ./Dockerfile_arm64v8 -t duonghuynhbaocr/metabase:arm64v8_0.0.1 .
+  docker build -f ./Dockerfile_arm64v8 -t duonghuynhbaocr/metabase:arm64v8_0.0.3 .
 
    ```
 * You can create your self docker-compose file to build and run this images
